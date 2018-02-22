@@ -10,16 +10,14 @@ namespace CrowiNet
 {
     public class Credentials
     {
-        public Credentials(string user, string accessToken)
+        public Credentials(string accessToken)
         {
             AccessToken = accessToken;
-            User = user;
         }
 
         public string AccessToken { get; }
-        public string User { get; }
 
-        internal string Query => $"access_token={AccessToken}&user={User}";
+        internal string Query => $"access_token={AccessToken}";
     }
 
     internal static class StringExtensions
@@ -39,9 +37,9 @@ namespace CrowiNet
             _credentials = credentials ?? throw new ArgumentNullException(nameof(credentials));
         }
 
-        public async Task<PagesListResult> GetPageListAsync()
+        public async Task<PagesListResult> GetPageListAsync(IPathParameter parameter)
         {
-            var targetEndPoint = new Uri(_endPoint, $"./_api/pages.list?{_credentials.Query}");
+            var targetEndPoint = new Uri(_endPoint, $"./_api/pages.list?{_credentials.Query}&{parameter.PathParameter}");
             var downloadedString = await _client.DownloadStringTaskAsync(targetEndPoint).ConfigureAwait(false);
             var result = PagesListResult.FromJson(downloadedString.ToJson());
             return result;

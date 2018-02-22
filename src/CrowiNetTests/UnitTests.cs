@@ -6,7 +6,7 @@ namespace CrowiNetTests
 {
     public class UnitTests
     {
-        private static readonly Credentials Credentials = new Credentials(Settings.User, Settings.AccessToken);
+        private static readonly Credentials Credentials = new Credentials(Settings.AccessToken);
         private static readonly Uri EndPoint = new Uri(Settings.EndPoint);
 
         [Fact]
@@ -14,7 +14,8 @@ namespace CrowiNetTests
         {
             using (var crowi = new Crowi(EndPoint, Credentials))
             {
-                var result = await crowi.GetPageListAsync();
+                var parameter = new User( Settings.User );
+                var result = await crowi.GetPageListAsync(parameter);
                 Assert.True(result.Ok);
             }
         }
