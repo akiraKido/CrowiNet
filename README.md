@@ -7,8 +7,10 @@ private static class Program
 {
     private static void Main()
     {
-        using(var crowi = new Crowi("user", "accessToken"))
+        using(var crowi = new Crowi("accessToken"))
         {
+            // get page list for user
+            var parameter = new User("user");
             var pageList = await crowi.GetPageListAsync();
         }
     }
