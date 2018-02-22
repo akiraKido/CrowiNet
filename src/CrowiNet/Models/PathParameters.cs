@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CrowiNet.Models
+namespace CrowiNet
 {
     public interface IPathParameter
     {
