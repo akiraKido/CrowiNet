@@ -2,13 +2,13 @@
 
 namespace CrowiNet.Models
 {
-    public class Author
+    public class UserInfo
     {
-        private Author() { }
+        private UserInfo() { }
 
-        public static Author FromJson(dynamic json)
+        public static UserInfo FromJson(dynamic json)
         {
-            var result = new Author
+            var result = new UserInfo
             {
                 _Id = json["_id"],
                 Email = json["email"],
@@ -16,7 +16,7 @@ namespace CrowiNet.Models
                 Name = json["name"],
                 Image = json["image"],
                 Admin = json["admin"],
-                CreatedAt = DateTime.Parse( (string)json["createdAt"] ),
+                CreatedAt = DateTime.Parse((string)json["createdAt"]),
                 Status = json["status"],
                 Language = json["lang"]
             };

@@ -12,9 +12,19 @@ namespace CrowiNetTests
         [Fact]
         public async void PageListTest()
         {
-            using ( var crowi = new Crowi( EndPoint, Credentials ) )
+            using (var crowi = new Crowi(EndPoint, Credentials))
             {
                 var result = await crowi.GetPageListAsync();
+                Assert.True(result.Ok);
+            }
+        }
+
+        [Fact]
+        public async void UsersTest()
+        {
+            using (var crowi = new Crowi(EndPoint, Credentials))
+            {
+                var result = await crowi.GetUsersAsync();
                 Assert.True(result.Ok);
             }
         }

@@ -2,11 +2,11 @@
 
 namespace CrowiNet.Models
 {
-    public class PageList
+    public class PagesListResult
     {
-        private PageList() { }
+        private PagesListResult() { }
 
-        public static PageList FromJson(dynamic json)
+        public static PagesListResult FromJson(dynamic json)
         {
             var pages = new List<PageInfo>();
             foreach (var item in json["pages"])
@@ -14,7 +14,7 @@ namespace CrowiNet.Models
                 pages.Add(PageInfo.FromJson(item));
             }
 
-            var result = new PageList
+            var result = new PagesListResult
             {
                 Ok = (bool)json["ok"],
                 Pages = pages.ToArray()

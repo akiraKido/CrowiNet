@@ -11,7 +11,7 @@ namespace CrowiNet.Models
             var result = new RevisionInfo
             {
                 _Id = json["_id"],
-                Author = Models.Author.FromJson(json["author"]),
+                Author = UserInfo.FromJson(json["author"]),
                 Body = json["body"],
                 Path = json["path"],
                 __V = json["__v"],
@@ -22,7 +22,7 @@ namespace CrowiNet.Models
         }
 
         public string _Id { get; private set; }
-        public Author Author { get; private set; }
+        public UserInfo Author { get; private set; }
         public string Body { get; private set; }
         public string Path { get; private set; }
         public int __V { get; private set; }

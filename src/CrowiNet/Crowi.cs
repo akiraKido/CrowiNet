@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,11 @@ namespace CrowiNet
         internal string Query => $"access_token={AccessToken}&user={User}";
     }
 
+    internal static class StringExtensions
+    {
+        internal static dynamic ToJson( this string jsonString ) => JSON.DeserializeDynamic( jsonString );
+    }
+
     public class Crowi : IDisposable
     {
         private readonly Uri _endPoint;
@@ -33,17 +39,49 @@ namespace CrowiNet
             _credentials = credentials ?? throw new ArgumentNullException(nameof(credentials));
         }
 
-        public async Task<PageList> GetPageListAsync()
+        public async Task<PagesListResult> GetPageListAsync()
         {
-            var targetEndPoint = new Uri( _endPoint, $"./_api/pages.list?{_credentials.Query}" );
+            var targetEndPoint = new Uri(_endPoint, $"./_api/pages.list?{_credentials.Query}");
             var downloadedString = await _client.DownloadStringTaskAsync(targetEndPoint).ConfigureAwait(false);
-            var result = PageList.FromJson(JSON.DeserializeDynamic(downloadedString));
+            var result = PagesListResult.FromJson(downloadedString.ToJson());
             return result;
         }
-        
+
+        public async Task<UsersResult> GetUsersAsync()
+        {
+            var targetEndPoint = new Uri( _endPoint, $"./_api/users.list?{_credentials.Query}" );
+            var downloadedString = await _client.DownloadStringTaskAsync( targetEndPoint ).ConfigureAwait( false );
+            var result = UsersResult.FromJson( downloadedString.ToJson() );
+            return result;
+        }
+
         public void Dispose()
         {
             _client.Dispose();
         }
+    }
+
+    public class UsersResult
+    {
+        private UsersResult() { }
+
+        public static UsersResult FromJson(dynamic json)
+        {
+            var users = new List<UserInfo>();
+            foreach (var user in json["users"])
+            {
+                users.Add( UserInfo.FromJson( user ) );
+            }
+
+            var result = new UsersResult
+            {
+                Users = users.ToArray(),
+                Ok = json["ok"]
+            };
+            return result;
+        }
+
+        public UserInfo[] Users { get; private set; }
+        public bool Ok { get; private set; }
     }
 }

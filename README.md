@@ -18,3 +18,4 @@ private static class Program
 ## Available End Points
 
 - `pages.list`
+- `users.list`
