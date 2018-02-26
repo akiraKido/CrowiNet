@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace CrowiNet.Models
 {
@@ -8,16 +9,12 @@ namespace CrowiNet.Models
 
         public static PagesListResult FromJson(dynamic json)
         {
-            var pages = new List<PageInfo>();
-            foreach (var item in json["pages"])
-            {
-                pages.Add(PageInfo.FromJson(item));
-            }
-
             var result = new PagesListResult
             {
                 Ok = (bool)json["ok"],
-                Pages = pages.ToArray()
+                Pages = ((IEnumerable<dynamic>)json["pages"])
+                            .Select(PageInfo.FromJson)
+                            .ToArray()
             };
             return result;
         }
