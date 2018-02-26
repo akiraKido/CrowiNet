@@ -22,7 +22,7 @@ namespace CrowiNet
 
     internal static class StringExtensions
     {
-        internal static dynamic ToJson( this string jsonString ) => JSON.DeserializeDynamic( jsonString );
+        internal static dynamic ToJson(this string jsonString) => JSON.DeserializeDynamic(jsonString);
     }
 
     public class Crowi : IDisposable
@@ -40,16 +40,19 @@ namespace CrowiNet
         public async Task<PagesListResult> GetPageListAsync(IPathParameter parameter)
         {
             var targetEndPoint = new Uri(_endPoint, $"./_api/pages.list?{_credentials.Query}&{parameter.PathParameter}");
-            var downloadedString = await _client.DownloadStringTaskAsync(targetEndPoint).ConfigureAwait(false);
-            var result = PagesListResult.FromJson(downloadedString.ToJson());
-            return result;
+            return await DownloadString<dynamic, PagesListResult>(targetEndPoint, PagesListResult.FromJson);
         }
 
         public async Task<UsersResult> GetUsersAsync()
         {
-            var targetEndPoint = new Uri( _endPoint, $"./_api/users.list?{_credentials.Query}" );
-            var downloadedString = await _client.DownloadStringTaskAsync( targetEndPoint ).ConfigureAwait( false );
-            var result = UsersResult.FromJson( downloadedString.ToJson() );
+            var targetEndPoint = new Uri(_endPoint, $"./_api/users.list?{_credentials.Query}");
+            return await DownloadString<dynamic, UsersResult>(targetEndPoint, UsersResult.FromJson);
+        }
+
+        private async Task<T> DownloadString<TDynamic, T>(Uri endPoint, Func<TDynamic, T> parser)
+        {
+            var downloadedString = await _client.DownloadStringTaskAsync(endPoint).ConfigureAwait(false);
+            var result = parser(downloadedString.ToJson());
             return result;
         }
 
@@ -68,7 +71,7 @@ namespace CrowiNet
             var users = new List<UserInfo>();
             foreach (var user in json["users"])
             {
-                users.Add( UserInfo.FromJson( user ) );
+                users.Add(UserInfo.FromJson(user));
             }
 
             var result = new UsersResult
